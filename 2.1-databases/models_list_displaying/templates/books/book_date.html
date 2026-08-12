@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Каталог книг{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="header">
+            <h1><a href="/books">Каталог</a></h1>
+        </div>
+        <div class="row">
+            {% for book in books %}
+            <div class="book col-md-4">
+                <a href="{% url 'book' book.pub_date %}">
+                    <h2>{{ book.name }}</h2>
+                </a>
+                <p>Автор: {{ book.author }} </p>
+                <p>Дата публикации: {{ book.pub_date }} </p>
+            </div>
+            {% endfor %}
+        </div>
+                <!-- Блок навигации по датам -->
+    <div class="date-navigation" style="margin-top: 20px; display: flex; gap: 10px; align-items: center;">
+      {% if previous_book %}
+        <a href="{% url 'book' pub_date=previous_book.pub_date|date:'Y-m-d' %}" class="button nav-button">
+          < {{ previous_book.pub_date|date:'Y-m-d' }}
+        </a>
+      {% else %}
+        <span class="button disabled-nav">⟵ Нет более ранних книг</span>
+      {% endif %}
+
+      {% if next_book %}
+        <a href="{% url 'book' pub_date=next_book.pub_date|date:'Y-m-d' %}" class="button nav-button" style="margin-left: auto;">
+          {{ next_book.pub_date|date:'Y-m-d' }} >
+        </a>
+      {% else %}
+        <span class="button disabled-nav" style="margin-left: auto;">Нет более поздних книг ⟶</span>
+      {% endif %}
+    </div>
+    </div>
+{% endblock %}
