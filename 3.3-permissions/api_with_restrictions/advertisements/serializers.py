@@ -28,6 +28,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Метод для создания"""
+
         # Простановка значения поля создатель по-умолчанию.
         # Текущий пользователь является создателем объявления
         # изменить или переопределить его через API нельзя.
@@ -38,9 +39,12 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def validate(self, data):
-        """Метод для валидации. Вызывается при создании и обновлении."""
+        """
+        Метод для валидации. Вызывается при создании и обновлении.
 
-        # TODO: добавьте требуемую валидацию
+        """
+
+        # Метод проверяет количество объявлений автора со статусом OPEN
         request = self.context.get('request')
         if request and request.method == 'POST':
             user = request.user
