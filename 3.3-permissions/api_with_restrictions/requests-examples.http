@@ -1,6 +1,6 @@
 # примеры API-запросов
 
-@baseUrl = https://localhost:8000/api
+@baseUrl = http://localhost:8000/api
 
 # получение объявлений
 GET {{baseUrl}}/advertisements/
@@ -11,32 +11,111 @@ Content-Type: application/json
 # создание объявления
 POST {{baseUrl}}/advertisements/
 Content-Type: application/json
-Authorization: Token 902ef055a9ac93f18327f1f9c45ab059f1a62c7d
+Authorization: Token 1fc6387fd8ba549798ac5617461ae41547413a42
 
 {
   "title": "Шкаф IKEA",
   "description": "Срочно"
 }
-
 ###
 
-# попытка поменять объявление
-PATCH {{baseUrl}}/advertisements/1/
+# создание объявления uaer
+POST {{baseUrl}}/advertisements/
 Content-Type: application/json
-Authorization: Token 902ef055a9ac93f18327f1f9c45ab059f1a62c7d
+Authorization: Token 3edce61ebc2abccfc473d197d9a0f4e38f85981e
 
 {
-  "status": "CLOSED"
+  "title": "Стол IKEA",
+  "description": "Красивый"
 }
 
 ###
 
+# получение объявления
+GET {{baseUrl}}/advertisements/7/
+Content-Type: application/json
+
+
+###
+
+# попытка поменять объявление
+PATCH {{baseUrl}}/advertisements/17/
+Content-Type: application/json
+Authorization: Token 3edce61ebc2abccfc473d197d9a0f4e38f85981e
+
+{
+  "status": "DRAFT"
+}
+
+###
+
+# Удаление объявдения админом
+DELETE {{baseUrl}}/advertisements/7/
+Authorization: Token 1fc6387fd8ba549798ac5617461ae41547413a42
+
+###
+
+# Удаление объявдения ользователем
+DELETE {{baseUrl}}/advertisements/4/
+Authorization: Token 3edce61ebc2abccfc473d197d9a0f4e38f85981e
+
+
+###
+
 # фильтрация по создателю
-GET {{baseUrl}}/advertisements/?creator=3
+GET {{baseUrl}}/advertisements/?creator=2
 Content-Type: application/json
 
 ###
 
 # фильтрация по дате
-GET {{baseUrl}}/advertisements/?created_at_before=2020-10-01
+GET {{baseUrl}}/advertisements/?created_at_before=2026-10-07
 Content-Type: application/json
+
+###
+
+# фильтрация по статусу
+GET {{baseUrl}}/advertisements/?status=DRAFT
+Content-Type: application/json
+
+###
+
+# добавление  в избранное пользователь
+POST {{baseUrl}}/advertisements/4/favorite/
+Content-Type: application/json
+Authorization: Token 3edce61ebc2abccfc473d197d9a0f4e38f85981e
+
+###
+
+# добавление  в избранное админ
+POST {{baseUrl}}/advertisements/18/favorite/
+Content-Type: application/json
+Authorization: Token 1fc6387fd8ba549798ac5617461ae41547413a42
+
+###
+
+# просмотр избранное админ
+GET {{baseUrl}}/advertisements/?is_favorite=true
+Content-Type: application/json
+Authorization: Token 1fc6387fd8ba549798ac5617461ae41547413a42
+
+###
+
+# просмотр избранное пользоваттель
+GET {{baseUrl}}/advertisements/?is_favorite=true
+Content-Type: application/json
+Authorization: Token 3edce61ebc2abccfc473d197d9a0f4e38f85981e
+
+###
+
+# Удаление из избранного админ
+DELETE {{baseUrl}}/advertisements/18/favorite/
+Content-Type: application/json
+Authorization: Token 1fc6387fd8ba549798ac5617461ae41547413a42
+
+###
+
+# Удаление из избранного пользоваттель
+DELETE {{baseUrl}}/advertisements/4/favorite/
+Content-Type: application/json
+Authorization: Token 3edce61ebc2abccfc473d197d9a0f4e38f85981e
