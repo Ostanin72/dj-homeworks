@@ -29,7 +29,7 @@ def show_product(request, slug):
     phone_product = get_object_or_404(Phone, slug=slug)
 
     context = {
-        'phone': phone_product
+        'phone': phone_product,
     }
 
     return render(request, template, context)

@@ -3,7 +3,6 @@ from datetime import datetime
 
 from django.http import HttpResponse
 from django.shortcuts import render, reverse
-from django.utils.formats import date_format
 
 
 
@@ -47,6 +46,9 @@ def workdir_view(request):
     # по аналогии с `time_view`, напишите код,
     # который возвращает список файлов в рабочей 
     # директории
+    # file_list = '\n'.join(os.listdir('.'))
+    # msg = f'Список файлов в рабочей директории:\n {file_list}'
+    # return HttpResponse(msg)
     files = os.listdir('.')
     body = '<br>'.join(files)
     return HttpResponse(body, content_type='text/html')

@@ -1,4 +1,5 @@
 import pytest
+from django.core.exceptions import ValidationError
 from model_bakery import baker
 
 from rest_framework.test import APIClient
