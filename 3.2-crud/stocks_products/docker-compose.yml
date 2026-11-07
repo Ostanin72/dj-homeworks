@@ -1,0 +1,71 @@
+services:
+  # 1. База данных PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: inventory_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    networks:
+      - backend_network
+
+  # 2. Backend (Django + Gunicorn)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: inventory_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn stocks_products.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+    expose:
+      - "8000"
+    depends_on:
+      db:
+        condition: service_healthy # Ожидаем готовности БД
+    networks:
+      - backend_network
+
+  # 3. Nginx (Reverse Proxy)
+  nginx:
+    image: nginx:stable-alpine
+    container_name: inventory_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/app/static
+      # - ./media:/app/media (раскомментировать, если есть загрузка файлов)
+    depends_on:
+      - backend
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  static_volume:
